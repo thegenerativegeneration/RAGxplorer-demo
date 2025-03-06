@@ -7,12 +7,17 @@ try:
     import sys
     sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 except:
+    print("FAILED IMPORT")
     pass
 
+import torch
 import os
 import streamlit as st
 import plotly.graph_objs as go
 from ragxplorer import RAGxplorer
+
+# workaround
+torch.classes.__path__ = []
 
 st.set_page_config(
     page_title="RAGxplorer Demo",
@@ -54,7 +59,7 @@ if not st.session_state['loaded']:
         main_page.empty()
         main_button.empty()
         with st.spinner("Building Vector DB"):
-            st.session_state["client"].load_pdf(uploaded_file, chunk_size=st.session_state["chunk_size"], chunk_overlap=st.session_state["chunk_overlap"])
+            st.session_state["client"].load_pdf(uploaded_file, chunk_size=st.session_state["chunk_size"], chunk_overlap=st.session_state["chunk_overlap"], verbose=True)
             st.session_state['loaded'] = True
             st.rerun()
 else:
